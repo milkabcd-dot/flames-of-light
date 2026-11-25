@@ -478,7 +478,7 @@ function labScreen(){
  bEnd.onclick=()=>{finish();party(20)};
  bReset.onclick=()=>{run=false;t=0;bRun.disabled=false;bEnd.disabled=false;bRun.textContent="▶ הפעלת הניסוי";upd()};
  upd();
- A.push($("p",{},$("span",{class:"tag"},"מעבדת נתונים")),$("h2",{},"חוקרים את להבת הנר: ניסוי מדידה"),
+ A.push($("p",{},$("span",{class:"tag",style:"background:"+COL[4]},"תחנה 5 מתוך 5 · מעבדת נתונים")),$("h2",{},"חוקרים את להבת הנר: ניסוי מדידה"),
   $("div",{class:"card"},$("p",{},"בלי להדליק נר: אתם צופים בהדמיה של ניסוי שבוצע במעבדה מדעית ופורסם במאמר מחקר. מדליקים נר שעומד על משקל, מחכים 15 דקות עד שהבעירה מתייצבת, ואז מודדים כל 5 דקות, במשך שעה, את מסת הנר ואת גובה הלהבה."),
    $("p",{class:"note"},"מקור: Hamins, A., Bundy, M. & Dillon, S. (2005). ",$("i",{},"Characterization of Candle Flames"),". NIST. ",$("a",{href:NIST.url,target:"_blank",rel:"noopener"},"למאמר המלא"))),
   $("div",{class:"card"},$("h3",{},"מערך הניסוי"),$("ul",{},[
@@ -549,13 +549,13 @@ function render(){progress();app.innerHTML="";const k=state.cur;
    $("button",{class:"btn cta",type:"button",onclick:()=>go("brief")},"בואו נדליק!"),$("p",{class:"cr"},"עריכה: מילכה ברקו גרש"));
   app.append(hero);return}
  if(k==="brief"){
-  app.append($("h2",{},"המשימה שלכם: לפענח ארבע תעלומות"),
+  app.append($("h2",{},"המשימה שלכם: לפענח ארבע תעלומות ולערוך ניסוי מדידה"),
    $("p",{},"אתם צוות חוקרים. בכל תחנה צופים, מנחשים, בודקים ומגלים. כל תחנה שתסיימו תדליק נר בפס ההתקדמות."),
-   $("div",{class:"grid"},stations.map((st,i)=>$("button",{class:"sc",style:"background:"+COL[i],type:"button",onclick:()=>go(i)},"תחנה "+(i+1),$("small",{},st.t.replace(/^תחנה \d: /,""))))),
-   $("p",{class:"note"},"כל הניסויים מוצגים בצילום בלבד. אין להדליק נרות ואין לבצע ניסויים בבית או בכיתה. בסוף מחכה מעבדת נתונים: הדמיה של ניסוי מדידה אמיתי, עם שעון, טבלה וגרפים."),
+   $("div",{class:"grid"},stations.map((st,i)=>$("button",{class:"sc",style:"background:"+COL[i],type:"button",onclick:()=>go(i)},"תחנה "+(i+1),$("small",{},st.t.replace(/^תחנה \d: /,"")))).concat([$("button",{class:"sc",style:"background:"+COL[4],type:"button",onclick:()=>go("lab")},"תחנה 5",$("small",{},"מעבדת נתונים: ניסוי עם מדידות"))])),
+   $("p",{class:"note"},"כל הניסויים מוצגים בצילום בלבד. אין להדליק נרות ואין לבצע ניסויים בבית או בכיתה. בתחנה 5 מחכה הדמיה של ניסוי מדידה אמיתי, עם שעון, טבלה וגרפים."),
    $("div",{class:"nav"},$("span"),$("button",{class:"btn",type:"button",onclick:()=>go(0)},"לתחנה הראשונה")));return}
  if(typeof k==="number"){const s=stations[k];
-  app.append($("p",{},$("span",{class:"tag",style:"background:"+COL[k]},"תחנה "+(k+1)+" מתוך 4")),$("h2",{},s.t),$("div",{class:"bar",style:"background:"+COL[k]}),$("div",{class:"card"},$("b",{},s.q)),glossary(k));
+  app.append($("p",{},$("span",{class:"tag",style:"background:"+COL[k]},"תחנה "+(k+1)+" מתוך 5")),$("h2",{},s.t),$("div",{class:"bar",style:"background:"+COL[k]}),$("div",{class:"card"},$("b",{},s.q)),glossary(k));
   (state.cache[k]||(state.cache[k]=s.build())).forEach(n=>app.append(n.classList&&n.classList.contains("q")?$("div",{class:"card"},n):n));
   stepNav(k,k===0?"brief":k-1,k===3?"למעבדת הנתונים":"לתחנה הבאה",()=>{state.done[k]=true;go(k===3?"lab":k+1)}).forEach(n=>app.append(n));
   if(state.done[k]){const o=need[k];need[k]=0;updateBtn(k);need[k]=o}else updateBtn(k);return}
