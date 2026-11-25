@@ -119,6 +119,7 @@ const MEDIA={
  relight:{vids:[["CqoP7MtrgBQ",39,"הדלקה מחדש של נר דרך שובל האדים – סרטון 1"],["C5eTn5d0cvg",46,"הדלקה מחדש של נר דרך שובל האדים – סרטון 2"]]},
  how:{vids:[["mkOVZGlvzgY",34,"איך נרות עובדים"]]},
  soot:{vids:[["0kfdhr3U0Fs",0,"פיח על כף מתכת בלהבת נר",1]]},
+ stem:{vids:[["bTUK3dJrBu4",0,"סרטון להעשרה (STEM)",1]]},
  clock:{vids:[["910qqX9Ma-c",0,"שעון נר: איך השתמשו בנר כדי למדוד זמן",1]]},
  ring:{vids:[["u5_ZvYl5Kvg",0,"ניסוי הטבעת: לוח זכוכית קר באזור הצהוב של הלהבה",1]]},
  spaceV:{vids:[["eL_4Ey_NJaE",0,"נר בוער בחלל",1]]},
@@ -127,7 +128,7 @@ const MEDIA={
 };
 const $=(t,a={},...k)=>{const e=document.createElement(t);for(const x in a){if(x==="class")e.className=a[x];else if(x==="html")e.innerHTML=a[x];else if(x.startsWith("on"))e.addEventListener(x.slice(2),a[x]);else e.setAttribute(x,a[x])}k.flat().forEach(c=>e.append(c));return e};
 const COL=["#e53935","#fb8c00","#43a047","#8e24aa","#039be5"];
-const state={cur:"intro",done:[false,false,false,false],labDone:false,tasks:{},ev:new Set()};
+const state={cur:"intro",done:[false,false,false,false],labDone:false,tasks:{},cache:{},ev:new Set()};
 
 function media(key,note){
  const m=MEDIA[key],w=$("div",{});
@@ -204,7 +205,7 @@ function taskOrder(st,id,q,correct,start){
  const b=$("button",{class:"btn",type:"button"},"בדיקת הסדר");
  b.onclick=()=>{const wrong=items.filter((t,i)=>t!==correct[i]).length;
   if(!wrong){show(f,"good","הסדר נכון. הפתיל מוביל שעווה נוזלית, ורק אדי השעווה מגיבים עם החמצן בלהבה.");markDone(st,id)}
-  else show(f,"warn","בסדר יש טעות. חשבו: מה קורה לשעווה ראשון, ומתי היא הופכת לגז?")};
+  else show(f,"warn","בסדר שבחרתם יש טעות. חשבו: מה קורה לשעווה ראשון, ומתי היא הופכת לגז?")};
  return $("div",{class:"q"},$("p",{},$("b",{},q)),ol,b,f);
 }
 function taskMatch(st,id,q,rows,choices){
@@ -248,7 +249,7 @@ function taskPick(st,id){
 }
 
 function markDone(st,id){state.tasks[st]=state.tasks[st]||{};state.tasks[st][id]=true;updateBtn(st)}
-const need={0:5,1:6,2:3,3:4,lab:0};
+const need={0:5,1:6,2:3,3:4,lab:8};
 function updateBtn(st){const n=Object.keys(state.tasks[st]||{}).length,b=document.getElementById("finish"+st),c=document.getElementById("count"+st),cc=document.getElementById("concl"+st);
  if(c)c.textContent=need[st]?"הושלמו "+n+" מתוך "+need[st]+" משימות":"אפשר לדלג לסיכום, או לפתור כדי לאתגר את עצמכם";
  if(b)b.disabled=n<need[st];if(cc)cc.style.display=n>=need[st]?"block":"none"}
@@ -356,7 +357,7 @@ const stations=[
    d.push(taskOrder(0,"o","שלב ג – סדרו את השלבים בסדר הנכון:",["שעווה מוצקה","התכה","עלייה בפתיל","אידוי","תגובות בעירה"],["אידוי","שעווה מוצקה","תגובות בעירה","התכה","עלייה בפתיל"]));
    d.push(taskSort(0,"x","שלב ד – מה נכנס ללהבה ומה יוצא ממנה? מיינו כל חומר:",[
     {t:"אדי שעווה (פחמימנים):",a:"in",w:"חשבו מה הלהבה צריכה כדי להמשיך לבעור: הדלק שמגיע מהפתיל.",h:"זה הדלק, והוא מגיע אל הלהבה מהפתיל."},{t:"חמצן (O₂) מהאוויר:",a:"in",w:"הוא מגיע מהאוויר שמסביב ומגיב עם הדלק. הוא לא נוצר בלהבה.",h:"מחמצן שמגיע מהאוויר."},
-    {t:"פחמן דו-חמצני (CO₂):",a:"full",w:"הוא נוצר כשהפחמן שבדלק מתחמצן עד הסוף, כשיש מספיק חמצן.",h:"פחמן שהתחמצן עד הסוף."},{t:"אדי מים (H₂O):",a:"full",w:"הוא נוצר מהמימן שבדלק כשיש מספיק חמצן. הוא לא חומר שנכנס ללהבה.",h:"נוצר מהמימן שבדלק."},
+    {t:"פחמן דו-חמצני (CO₂):",a:"full",w:"הוא נוצר כשהפחמן שבדלק מגיב עם חמצן עד הסוף, כשיש מספיק חמצן.",h:"פחמן שהגיב עם חמצן עד הסוף."},{t:"אדי מים (H₂O):",a:"full",w:"הוא נוצר כשהמימן שבדלק מגיב עם חמצן, כשיש מספיק חמצן. הוא לא חומר שנכנס ללהבה.",h:"נוצר כשהמימן שבדלק מגיב עם חמצן."},
     {t:"פחמן חד-חמצני (CO):",a:"part",w:"בפחמן חד-חמצני יש רק אטום חמצן אחד לכל אטום פחמן, כלומר הפחמן התחמצן רק בחלקו.",h:"פחמן שהתחמצן רק חלקית, כשחסר חמצן."},{t:"פיח (פחמן מוצק, C):",a:"part",w:"זה פחמן מוצק שלא התחמצן, והוא זוהר בלהבה הצהובה.",h:"פחמן שלא התחמצן, וזוהר בלהבה."}],
     [{v:"in",l:"נכנס לבעירה"},{v:"full",l:"תוצר של בעירה מלאה"},{v:"part",l:"עשוי להיווצר בבעירה חלקית"}],
     "נכון. משוואה לדוגמה לבעירה מלאה של פחמימן מייצג: C₂₅H₅₂ + 38O₂ → 25CO₂ + 26H₂O + אנרגיה. בפועל פרפין הוא תערובת פחמימנים, ובלהבה מתרחשים גם פירוק תרמי (פירוק לחלקים קטנים יותר בהשפעת חום) ובעירה חלקית.","איך מסווגים: 'נכנס לבעירה' הוא מה שהלהבה צריכה (דלק וחמצן). 'תוצר של בעירה מלאה' הוא מה שנוצר כשיש מספיק חמצן. 'בעירה חלקית' היא מצב שבו חסר חמצן, ולכן עשוי להיווצר גם פחמן שלא התחמצן עד הסוף."));
@@ -366,17 +367,17 @@ const stations=[
   build(){const d=[];
    d.push(taskOpen(1,"h","שלב א – השערה: מה לדעתכם גורם לצבע הצהוב של הלהבה?",null,"אני חושב/ת שהצבע הצהוב נובע מ..."));
    d.push($("div",{class:"ev"},$("h3",{},"ראיה א: היווצרות פיח"),$("p",{},"פיח הוא חומר פחמני הנוצר בתהליכי בעירה לא מלאה או פירוק תרמי (פירוק בהשפעת חום) של חומרים אורגניים. בלהבת הנר חלקיקי פיח מתחממים וזוהרים. בסרטון מוחזקת כף מתכת קרה בתוך האזור הצהוב של הלהבה, ומצטבר עליה שחור."),media("soot","הניסוי מוצג בסרטון בלבד. אין לבצע אותו בבית או בכיתה."),
-    $("div",{class:"fb info show"},$("b",{},"הסבר: מאיפה הגיע השחור שעל הכף? "),"כאשר מקרבים כף מתכת קרה לחלק הצהוב של להבת הנר, המתכת מקררת את הגזים הבוערים ומגבילה את אספקת החמצן. כתוצאה מכך מתרחשת בעירה לא מלאה, וחלקיקי פחמן שחורים (פיח) שוקעים ומצטברים על הכף.")));
+    $("div",{class:"fb info show"},$("b",{},"הסבר: מאיפה הגיע השחור שעל הכף?"),$("p",{style:"margin:.4em 0"},"בלהבת הנר, באזור הצהוב, אין מספיק חמצן לבעירה מלאה, ולכן נוצרים שם חלקיקי פחמן זעירים הנקראים פיח. החלקיקים האלה גם מקור הצבע הצהוב: כשהם חמים מאוד הם זוהרים. בדרך כלל רוב החלקיקים מגיעים בהמשך דרכם כלפי מעלה לאזור שבו יש יותר חמצן, ושם הם נשרפים."),$("p",{style:"margin:.4em 0"},"כשמחזיקים כף מתכת בלהבה, היא עוצרת חלק מהחלקיקים לפני שהספיקו להישרף. הכף מפריעה להגעת החמצן באזור המגע איתה, והיא קרה בהרבה מהלהבה ולכן מקררת את הגזים שנוגעים בה. בעירה שלמה דורשת גם טמפרטורה גבוהה מספיק וגם חמצן מספיק. החלקיקים שלא נשרפו מצטברים על הכף כשכבה שחורה של פיח."))));
    d.push($("div",{class:"ev"},$("h3",{},"הדמיה: מתי חלקיק פחמן זוהר?"),simGlow()));
    d.push(taskPick(1,"p"));
    d.push(taskMCQ(1,"c1","מה אפשר להסיק מהפיח שהצטבר על הכף?",["שבלהבה יש חלקיקים פחמניים שלא התחמצנו עד הסוף","שהלהבה מכילה רק גז שקוף","שהכף עצמה בוערת","שהפיח נוצר רק מהפתיל"],0,"בלהבה קיימים חלקיקי פחמן. כשהם מתחממים מאוד הם זוהרים בצהוב-כתום (ליבון). הכף הקרה עצרה את בעירתם, ולכן הם הצטברו עליה."));
    d.push($("div",{class:"ev",style:"border-right-color:#43a047;background:#eefaf0"},$("h3",{style:"color:#2e7d32"},"פינת STEM: מהמעבדה אל העולם"),
     $("ul",{},
-     $("li",{},$("b",{},"מדע (S): "),"בעירה לא מלאה יוצרת פיח. כשיש מספיק חמצן, הפחמן הופך ל־CO₂ ולא נוצר פיח."),
+     $("li",{},$("b",{},"מדע (S): "),"בעירה לא מלאה יוצרת פיח. כשיש מספיק חמצן, הפחמן מהדלק מגיב עם החמצן ונוצר פחמן דו-חמצני (CO₂), והמימן מהדלק מגיב עם החמצן ונוצרים מים (H₂O), ולכן לא נוצר פיח."),
      $("li",{},$("b",{},"טכנולוגיה (T): "),"בעבר אספו פיח מלהבות והכינו ממנו דיו שחורה לכתיבה. גם היום משתמשים בפחמן שחור, למשל בצמיגים ובטונר של מדפסות."),
      $("li",{},$("b",{},"הנדסה (E): "),"בכיריים גז יש פתחים שמכניסים אוויר ומערבבים אותו עם הגז לפני הבעירה. כך הלהבה כחולה, הבעירה מלאה יותר ונוצר מעט פיח."),
-     $("li",{},$("b",{},"מתמטיקה (M): "),"כדי להשוות כמויות פיח צריך למדוד: זמן בשניות, גובה הכף מעל הפתיל בס״מ, ולרשום את התוצאות בטבלה."))));
-   d.push(taskMCQ(1,"e1","אתגר הנדסי: מדוע מהנדסים מתכננים כיריים גז כך שהאוויר מתערבב עם הגז לפני הבעירה?",["כדי שהלהבה תהיה צהובה ובוהקת יותר","כדי שיהיה מספיק חמצן לבעירה מלאה: הלהבה כחולה, חמה יותר ונוצר מעט פיח","כדי שהגז יבער לאט יותר","כדי לקרר את הסיר"],1,"עם מספיק חמצן הפחמן מתחמצן עד הסוף ל־CO₂. אין חלקיקי פיח לוהטים, ולכן הלהבה כחולה והסיר לא מתלכלך בשחור."));
+     $("li",{},$("b",{},"מתמטיקה (M): "),"כדי להשוות כמויות פיח צריך למדוד: זמן בשניות, גובה הכף מעל הפתיל בס״מ, ולרשום את התוצאות בטבלה.")),media("stem")));
+   d.push(taskMCQ(1,"e1","אתגר הנדסי: מדוע מהנדסים מתכננים כיריים גז כך שהאוויר מתערבב עם הגז לפני הבעירה?",["כדי שהלהבה תהיה צהובה ובוהקת יותר","כדי שיהיה מספיק חמצן לבעירה מלאה: הלהבה כחולה, חמה יותר ונוצר מעט פיח","כדי שהגז יבער לאט יותר","כדי לקרר את הסיר"],1,"עם מספיק חמצן הפחמן מהדלק מגיב עם החמצן עד הסוף ונוצר פחמן דו-חמצני (CO₂), והמימן מהדלק מגיב עם החמצן ונוצרים מים (H₂O). אין חלקיקי פיח לוהטים, ולכן הלהבה כחולה והסיר לא מתלכלך בשחור."));
    d.push(taskOpen(1,"e2","תכננו ניסוי: איך תבדקו אם משך הזמן שבו מחזיקים את הכף בלהבה משפיע על כמות הפיח? כתבו מה תשנו, מה תמדדו ומה תשמרו קבוע.","אשנה את זמן החזקת הכף בלהבה (למשל 2, 4 ו־6 שניות). אמדוד את כמות הפיח, למשל לפי גודל הכתם השחור או לפי כמה כהה הוא. אשמור קבוע את סוג הכף, את המיקום שלה בלהבה (האזור הצהוב), את הנר ואת זרמי האוויר בחדר, ואחזור על כל מדידה כמה פעמים.","אשנה את... אמדוד את... אשמור קבוע את..."));
    d.push(taskOpen(1,"s","מה קורה לחלקיקי פיח באזור שיש בו הרבה חמצן, ואיך זה משפיע על הצבע?","באזור עם הרבה חמצן הפחמן שבפיח עשוי להגיב עם החמצן וליצור בעיקר פחמן דו-חמצני, שהוא גז שקוף. בלי חלקיקים לוהטים אין זוהר צהוב, ולכן הצבע הצהוב נחלש שם."));
    return d}},
@@ -468,7 +469,7 @@ function labScreen(){
    tbody.append($("tr",{class:"newrow"},$("td",{},String(LAB.T[i])),$("td",{},LAB.M[i].toFixed(2)),$("td",{},d),$("td",{},String(LAB.H[i]))));shown++}}
  function upd(){const n=labCount(t);rows(n);scene.innerHTML=labScene(t,n);g1.innerHTML=labChart("mass",t,n);g2.innerHTML=labChart("hf",t,n);
   status.textContent=t<LAB.stab?"דקה "+Math.floor(t)+": שלב ההתייצבות. הנר דולק, אבל הבעירה עדיין לא יציבה, ולכן מחכים 15 דקות ורק אז מתחילים למדוד.":n>=LAB.T.length?"הניסוי הסתיים: נרשמו "+n+" מדידות, אחת כל 5 דקות, במשך שעה שלמה (מדקה 15 עד דקה 75). התבוננו בטבלה ובגרפים וענו על השאלות.":"דקה "+Math.floor(t)+": מודדים כל 5 דקות את מסת הנר ואת גובה הלהבה. כל מדידה נוספת לטבלה, ונקודה חדשה מופיעה בשני הגרפים."}
- function frame(ts){if(!scene.isConnected){run=false;return}if(!run)return;
+ function frame(ts){if(!scene.isConnected){run=false;if(t<LAB.end)bRun.textContent="▶ המשך";return}if(!run)return;
   const dt=Math.min(.1,(ts-last)/1000);last=ts;t=Math.min(LAB.end,t+dt*speed/.4);upd();
   if(t>=LAB.end)finish();else requestAnimationFrame(frame)}
  function finish(){run=false;t=LAB.end;upd();bRun.textContent="הניסוי הסתיים";bRun.disabled=true;bEnd.disabled=true}
@@ -484,6 +485,10 @@ function labScreen(){
    "הנר הונח על משקל רגיש בתוך תא מוגן מרוחות, כדי שהלהבה תהיה יציבה.",
    "את גובה הלהבה מדדו מתצלומים של הלהבה ליד סרגל עם שנתות של מילימטרים.",
    "בהתחלה הבעירה אינה יציבה. לכן מחכים כ־15 דקות ורק אז מתחילים למדוד."].map(x=>$("li",{},x)))),
+  $("div",{class:"card",style:"border-color:#1a8f5a"},$("h3",{style:"color:#1a8f5a"},"מה פורסם במאמר (NIST, 2005)"),$("ul",{},[
+   "קצב איבוד מסה אחרי ההתייצבות: כ־0.105 גרם לדקה (על סמך 5 ניסויים).",
+   "גובה להבה ממוצע: כ־42 מ״מ (על סמך 3 ניסויים).",
+   "זמן ההתייצבות עד שהבעירה יציבה: כ־12–15 דקות."].map(x=>$("li",{},x))),$("p",{class:"note"},"אלה הערכים שפורסמו. בהדמיה שלמטה, שאר הנתונים נבחרו כדי להמחיש את הניסוי.")),
   $("div",{class:"card"},$("h3",{},"הדמיית הניסוי"),scene,
    $("div",{style:"display:flex;gap:8px;justify-content:center;margin:12px 0;flex-wrap:wrap;align-items:center"},bRun,bEnd,bReset,sp),status,
    $("h3",{},"טבלת תוצאות"),$("div",{style:"overflow-x:auto"},table),
@@ -491,7 +496,7 @@ function labScreen(){
    $("p",{class:"note"},"ציר המסה מתחיל ב־88 גרם ולא ב־0, כדי שיהיה קל לראות את השינוי."),
    $("h3",{style:"color:#1f5fd6"},"גרף 2 (כחול): גובה הלהבה, במ״מ"),g2,
    $("p",{class:"note"},"הקו האדום בשני הגרפים מראה את הזמן הנוכחי בניסוי, כמו המחוג האדום בשעון."),
-   $("div",{class:"fb info show"},$("b",{},"שימו לב: "),"הנקודות בהדמיה מבוססות על ניסוי גדול יותר, שכלל מדידות נוספות רבות וחזרות על הניסוי. כל המדידות הראו את אותה מגמה. הערכים כאן עוגלו לצורך הפעילות.")));
+   $("div",{class:"fb info show"},$("b",{},"שימו לב: "),"הנקודות בהדמיה מבוססות על ניסוי גדול יותר, שכלל מדידות נוספות רבות וחזרות על הניסוי. כל המדידות הראו את אותה מגמה. הערכים כאן עוגלו לצורך הפעילות. הקצב (0.105 גרם לדקה) והגובה הממוצע (כ־42 מ״מ) פורסמו במאמר. שאר הערכים בטבלה נבחרו כדי להמחיש את הניסוי.")));
  const q=[];
  q.push(taskMCQ("lab","q1","מדוע לא התחילו למדוד מיד עם הדלקת הנר?",["כי הנר עדיין לא נדלק","כי בהתחלה הבעירה עדיין לא יציבה, ולכן מחכים כ־15 דקות להתייצבות","כי המשקל לא עבד","כי בהתחלה אין להבה"],1,"בדקות הראשונות הלהבה והבעירה עדיין משתנות. מודדים רק אחרי שהבעירה מתייצבת."));
  q.push(taskMCQ("lab","q2","קראו מהגרף הכתום: מה הייתה מסת הנר בדקה 45?",["כ־95.0 גרם","כ־91.9 גרם","כ־88.7 גרם","כ־42 גרם"],1,"בדקה 45 המסה הייתה 91.85 גרם, כלומר כ־91.9 גרם. אפשר לבדוק גם בטבלה."));
@@ -500,7 +505,7 @@ function labScreen(){
  q.push(taskMCQ("lab","q5","קראו מהגרף הכחול: מה גובה הלהבה אחרי ההתייצבות?",["כ־10 מ״מ","כ־42 מ״מ","כ־60 מ״מ","הגובה גדל כל הזמן"],1,"הגובה נע בין 41 ל־43 מ״מ, כלומר נשאר בערך 42 מ״מ לאורך כל השעה."));
  q.push(taskMCQ("lab","q6","האם קצב איבוד המסה קבוע? איך רואים זאת בגרף הכתום?",["לא, הקו בגרף עולה","כן: הנקודות יוצרות קו ישר יורד, ובכל 5 דקות הנר מאבד בערך אותה מסה","לא, הקו בגרף מתעקל","אי אפשר לדעת מהגרף"],1,"קו ישר פירושו שבכל פרק זמן שווה המסה יורדת באותה כמות, כלומר הקצב קבוע."));
  const clk=$("div",{},$("h3",{},"סרטון: הנר כשעון"),$("p",{},"צפו בסרטון. בעבר, לפני שהיו שעונים מכניים, השתמשו בנרות כדי למדוד זמן."),media("clock"),
-  taskOpen("lab","clock","איך הגרף הזה קשור לשימוש ההיסטורי בנר כשעון?","קצב איבוד המסה קבוע בכל יחידת זמן: בכל דקה הנר מאבד בערך אותה מסה, ולכן הוא גם מתקצר בערך באותו אורך בכל שעה. כך אפשר לסמן קווים על הנר ולדעת לפי החלק שנשרף כמה זמן עבר."));
+  taskOpen("lab","clock","איך הגרף הזה קשור לשימוש ההיסטורי בנר כשעון?","קצב איבוד המסה קבוע בכל יחידת זמן: בכל דקה הנר מאבד בערך אותה מסה, ולכן נר גלילי, שקוטרו קבוע לאורכו (כמו נר שעון), מתקצר בערך באותו אורך בכל שעה. כך אפשר לסמן קווים על הנר ולדעת לפי החלק שנשרף כמה זמן עבר."));
  q.push(taskMCQ("lab","q7","האם אפשר להסיק שכל נר יבער בדיוק באותו קצב?",["כן, זה חוק טבע","לא: המדידות נעשו בנר פרפין מסוים, בקוטר 21 מ״מ, בתא מוגן מרוחות. סוג השעווה, עובי הנר, הפתיל וזרמי האוויר עשויים לשנות את הקצב","כן, אם הנר ארוך מספיק","לא, כי הנר כבה אחרי כמה דקות"],1,"מסקנה מדעית תקפה רק לתנאים שנבדקו. לכן שעוני נרות כוילו לסוג נר מסוים."));
  const det=$("details",{class:"card"},$("summary",{},"הרחבה: משוואת בעירה וחומרים בתהליך"),$("p",{},"בעירה מלאה של פחמימן מייצג: C₂₅H₅₂ + 38O₂ → 25CO₂ + 26H₂O + אנרגיה. זו דוגמה להמחשה: פרפין הוא תערובת פחמימנים (לפי NIST, ממוצע של כ־25 אטומי פחמן), ובפועל מתרחשים גם פירוק תרמי (פירוק בהשפעת חום), יצירת פיח, בעירה חלקית ותגובות ביניים. המסה שהנר מאבד לא נעלמת: היא עוברת לאוויר בצורת פחמן דו-חמצני ואדי מים."),
   $("table",{},$("tr",{},$("th",{},"חומר"),$("th",{},"תפקיד")),
@@ -548,13 +553,13 @@ function render(){progress();app.innerHTML="";const k=state.cur;
    $("div",{class:"grid"},stations.map((st,i)=>$("button",{class:"sc",style:"background:"+COL[i],type:"button",onclick:()=>go(i)},"תחנה "+(i+1),$("small",{},st.t.replace(/^תחנה \d: /,""))))),
    $("p",{class:"note"},"כל הניסויים מוצגים בצילום בלבד. אין להדליק נרות ואין לבצע ניסויים בבית או בכיתה. בסוף מחכה מעבדת נתונים: הדמיה של ניסוי מדידה אמיתי, עם שעון, טבלה וגרפים."),
    $("div",{class:"nav"},$("span"),$("button",{class:"btn",type:"button",onclick:()=>go(0)},"לתחנה הראשונה")));return}
- if(typeof k==="number"){const s=stations[k];if(!state.done[k])state.tasks[k]={};
+ if(typeof k==="number"){const s=stations[k];
   app.append($("p",{},$("span",{class:"tag",style:"background:"+COL[k]},"תחנה "+(k+1)+" מתוך 4")),$("h2",{},s.t),$("div",{class:"bar",style:"background:"+COL[k]}),$("div",{class:"card"},$("b",{},s.q)),glossary(k));
-  s.build().forEach(n=>app.append(n.classList&&n.classList.contains("q")?$("div",{class:"card"},n):n));
+  (state.cache[k]||(state.cache[k]=s.build())).forEach(n=>app.append(n.classList&&n.classList.contains("q")?$("div",{class:"card"},n):n));
   stepNav(k,k===0?"brief":k-1,k===3?"למעבדת הנתונים":"לתחנה הבאה",()=>{state.done[k]=true;party();go(k===3?"lab":k+1)}).forEach(n=>app.append(n));
   if(state.done[k]){const o=need[k];need[k]=0;updateBtn(k);need[k]=o}else updateBtn(k);return}
- if(k==="lab"){if(!state.labDone)state.tasks.lab={};
-  labScreen().forEach(n=>app.append(n));
+ if(k==="lab"){
+  (state.cache.lab||(state.cache.lab=labScreen())).forEach(n=>app.append(n));
   stepNav("lab",3,"לסיכום החקירה",()=>{state.labDone=true;go("sum")}).forEach(n=>app.append(n));
   if(state.labDone){const o=need.lab;need.lab=0;updateBtn("lab");need.lab=o}else updateBtn("lab");return}
  if(k==="sum"){
@@ -571,6 +576,9 @@ function render(){progress();app.innerHTML="";const k=state.cur;
     $("button",{class:"btn ghost",type:"button",style:"margin-top:10px",onclick:()=>window.print()},"הדפסה")),
    $("div",{class:"card"},$("h3",{},"מקורות מדעיים"),$("ul",{},[
     ["Hamins, Bundy & Dillon (2005). Characterization of Candle Flames, NIST","https://tsapps.nist.gov/publication/get_pdf.cfm?pub_id=101159"],
+    ["McGill University, Office for Science and Society – הסבר על להבת נר, פיח וצבע הלהבה","https://www.mcgill.ca/oss/node/8049"],
+    ["Hong Kong Observatory – Why is candlelight yellow and gas-grill light blue?","https://www.hko.gov.hk/en/education/earth-science/optical-phenomena/00354-why-is-candlelight-yellow-and-gasgrill-light-blue.html"],
+    ["Chicago Section, American Chemical Society – מאמר על כימיה של להבת נר","https://chicagoacs.org/articles/455"],
     ["Royal Society of Chemistry – The Chemistry of Candles","https://edu.rsc.org/feature/the-chemistry-of-candles/3007566.article"],
     ["RSC – Simple chemical reactions: how do candles work?","https://edu.rsc.org/lesson-plans/simple-chemical-reactions-how-do-candles-work-11-14-years/63.article"],
     ["NASA – Why NASA is studying flames in space","https://science.nasa.gov/biological-physical/resources/explainers-infographics/why-nasa-is-studying-flames-in-space/"],
@@ -578,7 +586,7 @@ function render(){progress();app.innerHTML="";const k=state.cur;
     ["NASA – Candle Flame Demonstration","https://ntrs.nasa.gov/api/citations/20000023218/downloads/20000023218.pdf"],
     ["NASA – Candle Flames in Microgravity (Dietrich, Ross, Tien)","https://ntrs.nasa.gov/archive/nasa/casi.ntrs.nasa.gov/19960008390.pdf"]
    ].map(([t,u])=>$("li",{},u?$("a",{href:u,target:"_blank",rel:"noopener"},t):t)))),
-   $("div",{class:"nav"},$("button",{class:"btn ghost",type:"button",onclick:()=>go("lab")},"חזרה למעבדה"),$("button",{class:"btn ghost",type:"button",onclick:()=>{state.done=[false,false,false,false];state.labDone=false;state.tasks={};state.ev.clear();go("intro")}},"התחלה מחדש")));
+   $("div",{class:"nav"},$("button",{class:"btn ghost",type:"button",onclick:()=>go("lab")},"חזרה למעבדה"),$("button",{class:"btn ghost",type:"button",onclick:()=>{state.done=[false,false,false,false];state.labDone=false;state.tasks={};state.cache={};state.ev.clear();go("intro")}},"התחלה מחדש")));
  }
 }
 render();
