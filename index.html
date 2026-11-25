@@ -545,11 +545,11 @@ function render(){progress();app.innerHTML="";const k=state.cur;
   const SC=["#e53935","#fb8c00","#fdd835","#43a047","#039be5","#8e24aa","#ec407a"];
   for(let i=0;i<16;i++)hero.append($("span",{class:"spk",style:`background:${SC[i%7]};left:${(i*37)%96}%;top:${(i*53)%90}%;animation-delay:${(i%7)*.4}s`}));
   hero.append($("h1",{class:"ttl"},"תעלומת להבת הנר"),$("p",{class:"sub"},"מה באמת מתרחש בתוך האש?"),coverArt(),
-   $("p",{},"ארבע תעלומות, הדמיות אינטראקטיביות וצילומים אמיתיים. מוכנים להדליק את הסקרנות?"),
+   $("p",{},"חמש תחנות, הדמיות אינטראקטיביות וצילומים אמיתיים. מוכנים להדליק את הסקרנות?"),
    $("button",{class:"btn cta",type:"button",onclick:()=>go("brief")},"בואו נדליק!"),$("p",{class:"cr"},"עריכה: מילכה ברקו גרש"));
   app.append(hero);return}
  if(k==="brief"){
-  app.append($("h2",{},"המשימה שלכם: לפענח ארבע תעלומות ולערוך ניסוי מדידה"),
+  app.append($("h2",{},"המשימה שלכם: לפענח את תעלומות להבת הנר בחמש תחנות"),
    $("p",{},"אתם צוות חוקרים. בכל תחנה צופים, מנחשים, בודקים ומגלים. כל תחנה שתסיימו תדליק נר בפס ההתקדמות."),
    $("div",{class:"grid"},stations.map((st,i)=>$("button",{class:"sc",style:"background:"+COL[i],type:"button",onclick:()=>go(i)},"תחנה "+(i+1),$("small",{},st.t.replace(/^תחנה \d: /,"")))).concat([$("button",{class:"sc",style:"background:"+COL[4],type:"button",onclick:()=>go("lab")},"תחנה 5",$("small",{},"מעבדת נתונים: ניסוי עם מדידות"))])),
    $("p",{class:"note"},"כל הניסויים מוצגים בצילום בלבד. אין להדליק נרות ואין לבצע ניסויים בבית או בכיתה. בתחנה 5 מחכה הדמיה של ניסוי מדידה אמיתי, עם שעון, טבלה וגרפים."),
